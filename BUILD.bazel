@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+# Dummy xcode_config so we don't need to build xcode_locator in the repository rule.
+xcode_config(name = "disable_xcode")
+
+go_library(
+    name = "tar_builder_lib",
+    srcs = ["main.go"],
+    importpath = "hyperbase/build_tools/tar_builder",
+    visibility = ["//visibility:private"],
+)
+
+go_binary(
+    name = "tar_builder",
+    embed = [":tar_builder_lib"],
+    visibility = ["//visibility:public"],
+)
+

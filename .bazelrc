@@ -1,0 +1,21 @@
+common --noenable_workspace
+common --watchfs
+
+# Setup hermetic cc toolchain
+common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common --xcode_version_config=//:disable_xcode
+
+common --enable_platform_specific_config
+
+common --nolegacy_external_runfiles
+common --reuse_sandbox_directories
+common --sandbox_default_allow_network=false
+common --incompatible_strict_action_env
+common --action_env=PATH=/bin:/usr/bin
+common --host_action_env=PATH=/bin:/usr/bin
+common --repo_env=PATH=/bin:/usr/bin
+common:linux --noincompatible_sandbox_hermetic_tmp
+test --incompatible_exclusive_test_sandboxed
+
+common:macos --spawn_strategy=darwin-sandbox
+common:linux --spawn_strategy=linux-sandbox

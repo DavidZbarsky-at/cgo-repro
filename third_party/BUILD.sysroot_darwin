@@ -1,0 +1,60 @@
+srcs = glob(
+    # Significantly cut down on the sysroot size by only including the headers we need.
+    # It's ok to expand this as needed, but there are definitely headers/libs in the sysroot
+    # that we should be building from source instead, so please ask for feedback before editing!
+    include = [
+        "usr/include/*.h",
+        "usr/include/_types/**",
+        "usr/include/architecture/**",
+        "usr/include/arm/**",
+        "usr/include/arpa/**",
+        "usr/include/bsm/**",
+        "usr/include/dispatch/**",
+        "usr/include/libkern/**",
+        "usr/include/mach/**",
+        "usr/include/mach_debug/**",
+        "usr/include/mach-o/**",
+        "usr/include/machine/*.h",
+        "usr/include/malloc/**",
+        "usr/include/net/**",
+        "usr/include/netinet*/**",
+        "usr/include/os/**",
+        "usr/include/pthread/**",
+        "usr/include/secure/**",
+        "usr/include/sys/**",
+        "usr/include/uuid/**",
+        "usr/include/xlocale/**",
+        "usr/include/FSEvents/**",
+        "usr/include/CoreFoundation/**",
+        # Most libs should be built from source, but grab the few libs we do want from the system.
+        "usr/lib/libc.tbd",
+        "usr/lib/libc++*",
+        "usr/lib/libcharset*",
+        "usr/lib/libiconv.tbd",
+        "usr/lib/libm.tbd",
+        "usr/lib/libobjc.tbd",
+        "usr/lib/libresolv*",
+        "usr/lib/libpthread.tbd",
+        "usr/lib/libSystem*",
+        "System/Library/Frameworks/CoreFoundation.framework/CoreFoundation.tbd",
+        "System/Library/Frameworks/Foundation.framework/Foundation.tbd",
+        "System/Library/Frameworks/Security.framework/Security.tbd",
+    ],
+    exclude = [
+        # Don't use system zlib, we build our own.
+        "usr/include/zlib.h",
+    ],
+) + select({
+    "@platforms//cpu:x86_64": glob(["usr/include/i386/**"]),
+    "//conditions:default": [],
+})
+
+# Uncomment these lines to examine the size of the sysroot.
+#print (len(srcs))
+#[print(f) for f in srcs]
+
+filegroup(
+    name = "sysroot",
+    srcs = srcs,
+    visibility = ["//visibility:public"],
+)
